@@ -16,18 +16,17 @@ Vagrant.configure(2) do |config|
 	# vb.gui = true
         vb.name = "osx-14-#{port}"
         vb.memory = "4096"
-	vb.cpus = "2"
-        vb.linked_clone = true
+	# vb.cpus = "2"
+        # vb.linked_clone = true
 	vb.customize 'pre-boot', ['modifyvm', :id, '--audio', 'none']
       end
 
       node.vm.provision "shell", privileged: false, inline: <<EOF
 defaults -currentHost write com.apple.screensaver idleTime 0
-sudo mkdir -p /usr/local/bin /usr/local/include /usr/local/lib /usr/local/sbin /usr/local/var /usr/local/opt /usr/local/share /usr/local/Cellar /usr/local/Caskroom /usr/local/Homebrew /usr/local/Frameworks
-sudo chown -R jenkins:jenkins /usr/local/bin /usr/local/include /usr/local/lib /usr/local/sbin /usr/local/var /usr/local/opt /usr/local/share /usr/local/Cellar /usr/local/Caskroom /usr/local/Homebrew /usr/local/Frameworks
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew update
 brew cask install caskroom/versions/java8
+sudo chown -R jenkins:jenkins /usr/local/bin /usr/local/include /usr/local/lib /usr/local/etc /usr/local/sbin /usr/local/var /usr/local/opt /usr/local/share /usr/local/Cellar /usr/local/Caskroom /usr/local/Homebrew /usr/local/Frameworks
 EOF
 
       authorized_keys.each do |key|
