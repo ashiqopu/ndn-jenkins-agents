@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure(2) do |config|
+  config.vm.hostname = "slave-ubuntu1904-64bit-1"
+  config.vm.box = "ubuntu/disco64"
+  config.disksize.size = "70GB"
+  config.vm.network "forwarded_port", guest: 22, host: <port>, id: "ssh"
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "4096"
+    vb.cpus = "2"
+  end
+  
+  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update
+    sudo apt-get install -y git libboost-all-dev build-essential libssl-dev default-jre pkg-config libsqlite3-dev
+    sudo useradd -m -p 8aefij34waef9 jenkins
+    echo "jenkins ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jenkins
+    sudo mkdir /home/jenkins/.ssh
+    sudo echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDHfJER+eGjDa0PCjN9V+VSYjMO9CiCkuTEi7w0Fio85PL/qBI67L3HmUkIFsIcA5fLiheClfeBvQPhojPpPrJSUD/3/iDgqLW/dWTQ64bpInuOCZJtZbSkVnbeVVyAxO7CF/0yh7W0NOg+IallnCimOEsDGhma686FYcvvOweCJ+w3bYA9fPwNGTBxsc++hTs/mR/WYehc1gECVZ1zE2EBNF+N9Uov+p+SuFkccpCVFM5tVzduNuQsWy6TRjoUK/q/P4BxhV8M/E2lbWK6SZ+ieOgQsC7UxBel5a6B7G//MqO4ZfHJEtpy5LuiuZMxjl/pdbfWlIwshjtnplH4BN35 ltr120@yi-jenkins" > /home/jenkins/.ssh/authorized_keys
+    sudo chown -R jenkins:jenkins /home/jenkins/.ssh
+    sudo chmod 700 /home/jenkins/.ssh
+    sudo chmod 600 /home/jenkins/.ssh/authorized_keys
+  SHELL
+end
