@@ -1,15 +1,22 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+
 Vagrant.configure(2) do |config|
-  config.vm.hostname = "slave-ubuntu1904-64bit-1"
-  config.vm.box = "ubuntu/disco64"
+  config.vm.hostname = "slave-ubuntu1904-64bit-2"
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+  # config.vm.box = "generic/ubuntu1810"
+  config.vm.box = "bento/ubuntu-19.04"
   config.disksize.size = "70GB"
-  config.vm.network "forwarded_port", guest: 22, host: <port>, id: "ssh"
+
+  config.vm.network "forwarded_port", guest: 22, host: 31837, id: "ssh"
+
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "4096"
     vb.cpus = "2"
   end
-  
+
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
   config.vm.provision "shell", inline: <<-SHELL
